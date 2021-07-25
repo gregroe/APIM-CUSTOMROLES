@@ -1,4 +1,4 @@
-﻿#Custome Role Definition for APIM apis
+﻿#Custom  Role Definition for APIM apis
 #Use for fine grain RBAC read/write access for individual APIs
 
 #define input parameters
