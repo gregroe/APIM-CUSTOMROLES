@@ -5,7 +5,7 @@
 #3. Take Note the APIM Service Name, the Resource Group Name, and the API Name
 
 #login to subscription
-#Login-AzAccount
+Login-AzAccount
 
 
 #define input parameters
