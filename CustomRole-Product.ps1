@@ -10,42 +10,48 @@ Login-AzAccount
 
 #define input parameters
 
-
 $RG = 'APIM'  #YOUR RESOURCE GROUP NAME
 $APIM_SVC_NAME = 'APIM-CONTOSO'#YOUR APIM SERVICE NAME
-$PRODUCT_or_API_NAME = 'api1' # the name of the APIM Product or API you want to assign a custom role to
-$CUSTOM_ROLENAME = 'APIM Mgmt Access ' + $APIM_SVC_NAME + " " +  $PRODUCT_or_API_NAME  #The Custom Role Name you want to use
+$PRODUCTNAME = 'Product1' # the name of the APIM Product or API you want to assign a custom role to
+$CUSTOM_ROLENAME = 'APIM Mgmt Access ' + $APIM_SVC_NAME + " " +  $PRODUCTNAME  #The Custom Role Name you want to use
 
 #AAD Group role assisngment.  In the case you want to Assign a custom role to a particular AAD Security Group. get the AAD group objectId.
 #users in that group will assume those custom role permissions 
-$AADGroupName = 'Api1DevTeam' 
+$AADGroupName = 'Product1DevTeam' 
 $AADgroupinfo = Get-AzADGroup -DisplayNameStartsWith $AADGroupName
 $AssignableObjectId = $AADgroupinfo.Id
-
-#User role assignment.  In the case you want to Assign a custom role to a specific user, get the AAD User ObjectId
-#$UserName = 'user4' # THE USERNAME of the person you want to assign API Custom role access to
-#get the User or or Group objectId
-#$user_info = Get-AzADUser -StartsWith $UserName
-#$AssignableObjectId = $user_info.Id 
 
 #Get the APIM Service instance context
 $apimContext = New-AzApiManagementContext -ResourceGroupName $RG -ServiceName $APIM_SVC_NAME
 
-#API Guid . In the case you want to assign custom role to a particular APIM API
-$ApiId = Get-AzApiManagementApi -Context $apimContext -ApiId $PRODUCT_or_API_NAME
-$AssignableScope = $ApiId.Id
-
 #PRODUCT Guid. In the case you want to assign custom role to a particular APIM Product
-#$ProductId = Get-AzApiManagementProduct -Context $apimContext -ProductId $PRODUCT_or_API_NAME
-#$AssignableScope = $ProductId.Id
+$ProductId = Get-AzApiManagementProduct -Context $apimContext -ProductId $PRODUCTNAME
+$AssignableScope = $ProductId.Id
 
 #Create the Custom Role Definition
 $role = Get-AzRoleDefinition "API Management Service Reader Role"
 $role.Id = $null
 $role.Name = $CUSTOM_ROLENAME
-$role.Description = 'Has read access to APIM-Contoso instance and write access to ' + $API_NAME
-$role.Actions.Add('Microsoft.ApiManagement/service/apis/write')
-$role.Actions.Add('Microsoft.ApiManagement/service/apis/*/write')
+$role.Description = 'Product level access '
+$role.Actions.Add('Microsoft.ApiManagement/service/*/read')
+$role.Actions.Add('Microsoft.ApiManagement/service/read')
+$role.Actions.Add('Microsoft.Authorization/*/read')
+$role.Actions.Add('Microsoft.Insights/alertRules/*')
+$role.Actions.Add('Microsoft.ResourceHealth/availabilityStatuses/read')
+$role.Actions.Add('Microsoft.ApiManagement/service/products/*')
+$role.Actions.Add('Microsoft.ApiManagement/service/products/apis/*')
+$role.Actions.Add('Microsoft.ApiManagement/service/apis/*')
+$role.Actions.Add('Microsoft.Resources/subscriptions/resourceGroups/read')
+$role.Actions.Add('Microsoft.Support/*')
+
+$role.NotActions.Add('Microsoft.ApiManagement/service/users/keys/read')
+$role.NotActions.Add('Microsoft.ApiManagement/service/delete')
+$role.NotActions.Add('Microsoft.ApiManagement/service/write')
+$role.NotActions.Add('Microsoft.ApiManagement/service/products/delete')
+$role.NotActions.Add('Microsoft.Resources/deployments/*')
+
+
+
 $role.AssignableScopes.Clear()
 $role.AssignableScopes.Add($AssignableScope)
 New-AzRoleDefinition -Role $role
@@ -54,8 +60,8 @@ New-AzRoleDefinition -Role $role
 New-AzRoleAssignment -ObjectId $AssignableObjectId -RoleDefinitionName $CUSTOM_ROLENAME -Scope $AssignableScope
 
 #Assign API Management Service Reader Role to AAD group
-$AssignableScope = (Get-AzApiManagement -ResourceGroupName $RG -Name $APIM_SVC_NAME).Id
-New-AzRoleAssignment -ObjectId $AssignableObjectId -RoleDefinitionName 'API Management Service Reader Role' -Scope $AssignableScope
+#$AssignableScope = (Get-AzApiManagement -ResourceGroupName $RG -Name $APIM_SVC_NAME).Id
+#New-AzRoleAssignment -ObjectId $AssignableObjectId -RoleDefinitionName 'API Management Service Reader Role' -Scope $AssignableScope
 
 
 
