@@ -2,7 +2,7 @@
 #Use for fine grain RBAC read/write access for individual APIs
 
 #define input parameters
-$UserName = 'user4' # THE USERNAME of the person you want to assign API Custom role access to
+$UserName = 'user4' # THE USERNAME of the person you want to assign API Custom role access to 
 $GroupName = 'API4Developers'
 $RG = 'APIM'  #YOUR RESOURCE GROUP NAME
 $APIM_SVC_NAME = 'APIM-CONTOSO'#YOUR APIM SERVICE NAME
