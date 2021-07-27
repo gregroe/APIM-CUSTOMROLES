@@ -5,8 +5,7 @@
 #3. Take Note the APIM Service Name, the Resource Group Name, and the API Name
 
 #login to subscription
-Login-AzAccount
-
+#Login-AzAccount
 
 #define input parameters
 
@@ -60,8 +59,8 @@ New-AzRoleDefinition -Role $role
 New-AzRoleAssignment -ObjectId $AssignableObjectId -RoleDefinitionName $CUSTOM_ROLENAME -Scope $AssignableScope
 
 #Assign API Management Service Reader Role to AAD group
-#$AssignableScope = (Get-AzApiManagement -ResourceGroupName $RG -Name $APIM_SVC_NAME).Id
-#New-AzRoleAssignment -ObjectId $AssignableObjectId -RoleDefinitionName 'API Management Service Reader Role' -Scope $AssignableScope
+$AssignableScope = (Get-AzApiManagement -ResourceGroupName $RG -Name $APIM_SVC_NAME).Id
+New-AzRoleAssignment -ObjectId $AssignableObjectId -RoleDefinitionName 'API Management Service Reader Role' -Scope $AssignableScope
 
 
 
@@ -69,7 +68,7 @@ New-AzRoleAssignment -ObjectId $AssignableObjectId -RoleDefinitionName $CUSTOM_R
 ############################ utility functions ################################################################
 
 #list assigned roled to user
-#Get-AzRoleAssignment -ObjectId $user_ObjectId   
+#cler -ObjectId $user_ObjectId   
 
 #get id of api   
 #az apim api list --resource-group APIM --service-name APIM-Contoso  
@@ -89,4 +88,7 @@ New-AzRoleAssignment -ObjectId $AssignableObjectId -RoleDefinitionName $CUSTOM_R
 #$role.Actions.Add("Microsoft.ApiManagement/service/*/read")
 #$role.Actions.Add("Microsoft.ApiManagement/service/read")
 #Set-AzRoleDefinition -Role $role
+
+#List a custom role definition
+#Get-AzRoleDefinition <role_name> | ConvertTo-Json
                  

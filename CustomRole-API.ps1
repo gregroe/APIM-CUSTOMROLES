@@ -7,37 +7,25 @@
 #login to subscription
 Login-AzAccount
 
-
 #define input parameters
-
 
 $RG = 'APIM'  #YOUR RESOURCE GROUP NAME
 $APIM_SVC_NAME = 'APIM-CONTOSO'#YOUR APIM SERVICE NAME
-$PRODUCT_or_API_NAME = 'api1' # the name of the APIM Product or API you want to assign a custom role to
-$CUSTOM_ROLENAME = 'APIM Mgmt Access ' + $APIM_SVC_NAME + " " +  $PRODUCT_or_API_NAME  #The Custom Role Name you want to use
+$API_NAME = 'api-1' # the name of the APIM Product or API you want to assign a custom role to
+$CUSTOM_ROLENAME = 'APIM Mgmt Access ' + $APIM_SVC_NAME + " " +  $API_NAME  #The Custom Role Name you want to use
+$AADGroupName = 'api-1DevTeam' 
 
 #AAD Group role assisngment.  In the case you want to Assign a custom role to a particular AAD Security Group. get the AAD group objectId.
 #users in that group will assume those custom role permissions 
-$AADGroupName = 'Api1DevTeam' 
 $AADgroupinfo = Get-AzADGroup -DisplayNameStartsWith $AADGroupName
 $AssignableObjectId = $AADgroupinfo.Id
-
-#User role assignment.  In the case you want to Assign a custom role to a specific user, get the AAD User ObjectId
-#$UserName = 'user4' # THE USERNAME of the person you want to assign API Custom role access to
-#get the User or or Group objectId
-#$user_info = Get-AzADUser -StartsWith $UserName
-#$AssignableObjectId = $user_info.Id 
 
 #Get the APIM Service instance context
 $apimContext = New-AzApiManagementContext -ResourceGroupName $RG -ServiceName $APIM_SVC_NAME
 
 #API Guid . In the case you want to assign custom role to a particular APIM API
-$ApiId = Get-AzApiManagementApi -Context $apimContext -ApiId $PRODUCT_or_API_NAME
+$ApiId = Get-AzApiManagementApi -Context $apimContext -ApiId $API_NAME
 $AssignableScope = $ApiId.Id
-
-#PRODUCT Guid. In the case you want to assign custom role to a particular APIM Product
-#$ProductId = Get-AzApiManagementProduct -Context $apimContext -ProductId $PRODUCT_or_API_NAME
-#$AssignableScope = $ProductId.Id
 
 #Create the Custom Role Definition
 $role = Get-AzRoleDefinition "API Management Service Reader Role"
