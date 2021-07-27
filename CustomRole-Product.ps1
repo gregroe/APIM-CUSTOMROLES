@@ -5,18 +5,18 @@
 #3. Take Note the APIM Service Name, the Resource Group Name, and the API Name
 
 #login to subscription
-#Login-AzAccount
+Login-AzAccount
 
 #define input parameters
 
 $RG = 'APIM'  #YOUR RESOURCE GROUP NAME
 $APIM_SVC_NAME = 'APIM-CONTOSO'#YOUR APIM SERVICE NAME
-$PRODUCTNAME = 'Product1' # the name of the APIM Product or API you want to assign a custom role to
+$PRODUCTNAME = 'Product4' # the name of the APIM Product or API you want to assign a custom role to
 $CUSTOM_ROLENAME = 'APIM Mgmt Access ' + $APIM_SVC_NAME + " " +  $PRODUCTNAME  #The Custom Role Name you want to use
+$AADGroupName = 'Product4DevTeam'
 
 #AAD Group role assisngment.  In the case you want to Assign a custom role to a particular AAD Security Group. get the AAD group objectId.
-#users in that group will assume those custom role permissions 
-$AADGroupName = 'Product1DevTeam' 
+#users in that group will assume those custom role permissions  
 $AADgroupinfo = Get-AzADGroup -DisplayNameStartsWith $AADGroupName
 $AssignableObjectId = $AADgroupinfo.Id
 
